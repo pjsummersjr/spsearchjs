@@ -204,8 +204,13 @@ function ParseResultsTable(resultsObj) {
                 //Replaces line feed and carriage return characters that break the JSON parsing in IE
                 theValue = theValue.replace(/[\n\r]/g, '');
             }
-
-            fieldJsonStr += "\"" + fields[j].Key + "\":\"" + theValue + "\"";
+            if (theValue != null && theValue.indexOf("[") >= 0) {
+                fieldJsonStr += "\"" + fields[j].Key + "\":" + theValue;
+            }
+            else {
+                fieldJsonStr += "\"" + fields[j].Key + "\":\"" + theValue + "\"";
+            }
+            
         }
         fieldJsonStr += '}';
         aSearchResult.fields = JSON.parse(fieldJsonStr);

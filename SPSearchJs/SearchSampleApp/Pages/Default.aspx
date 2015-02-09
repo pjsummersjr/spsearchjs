@@ -30,7 +30,22 @@
 <asp:Content ContentPlaceHolderID="PlaceHolderMain" runat="server">
 
     <div>
-        <div id="titlesection">SP.Search.js Test &amp; Dev Harness</div>
+        <div id="controldashboard">
+            <form id="searchform">
+                <table id="searchformtable">
+                    <tr>
+                        <td>Query Text:</td>
+                        <td><input type="text" id="querytext" /></td>
+                        <td>Graph Query</td>
+                        <td><textarea id="graphquerytext" rows="3" cols="50"></textarea></td>
+                    </tr>
+                </table>
+                <div>
+                    <input type="button" id="search" onclick="RunSearch()" value="Run Search" />
+                </div>
+            </form>
+        </div>
+        <div id="status"></div>
         <div id="results"></div>
     </div>
 

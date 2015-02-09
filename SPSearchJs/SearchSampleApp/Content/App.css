@@ -1,1 +1,21 @@
 ﻿/* Place custom styles below */
+.resulttable {
+    padding:5px;
+    border:1px solid #00BFFF;
+    margin-bottom:5px;
+    width:1020px;
+}
+
+.rowheader {
+    font-size:18px;
+    color:#1E90FF;
+    border-bottom:1px solid #00BFFF;
+}
+
+.secondaryrow {
+    display:none;
+}
+
+#status {
+    margin:10px 0px 10px 0px;
+}
