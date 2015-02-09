@@ -13,14 +13,14 @@ The query object abstracts the REST parameters and has a function called RunSear
 The RunSearch method accepts two arguments, a successful callback and a failed callback. The successful callback passes back the SearchResults object (see below) and the failed callback passes back an error message.
 ###### SearchResults
 Upon success of the RunSearch method, the success callback method accepts the SearchResults object as a parameter. This consists of the following subelements:
-1. Results
-..* Array of SearchResult
-...* JSON structure of name/value pairs - note that this breaks away from the native object returned from SharePoint and uses a more basic notation of { "fieldname": "field value",...}
-2. Refiners - Array of SearchRefiner 
-..* Display Name
-..* Property Name
-..* RefinementItems - Array of SearchRefinementItem
-...* Property Name
-...* Display Value
-...* Filter Value
-...* Count
+1 Results
+  * Array of SearchResult
+   * JSON structure of name/value pairs - note that this breaks away from the native object returned from SharePoint and uses a more basic notation of { "fieldname": "field value",...}
+2 Refiners - Array of SearchRefiner 
+  * Display Name
+  * Property Name
+  * RefinementItems - Array of SearchRefinementItem
+   * Property Name
+   * Display Value
+   * Filter Value
+   * Count
