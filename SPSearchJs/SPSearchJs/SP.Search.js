@@ -1,7 +1,9 @@
 ﻿function Query() {
     var self = this;
     self.SPSite = "";
-    self.SearchApiPath = "/_api/search/query"
+    self.SearchApiPath = "/_api/search/query";
+    //This is required if using the RequestExecutor for CrossDomain calls
+    self.ScriptBase = "/_layouts/15/";
 
     self.QueryText = "";
     self.SourceId = "";
@@ -80,6 +82,31 @@
                 failureFunc(data);
             }
         });
+    };
+
+    self.RunSearchWithExecutor = function (appWebUrl, hostWebUrl, successFunc, failureFunc) {
+        var queryParamStr = self.BuildQuery();
+
+        var searchUrl = appWebUrl + "/_api/search/query?" + queryParamStr;
+
+        $.getScript(self.SPSite + self.ScriptBase + "SP.RequestExecutor.js", function(data) {
+            var executor = new SP.RequestExecutor(appWebUrl);
+            executor.executeAsync({
+                url: searchUrl,
+                method: self.RequestMethod,
+                headers: { "Accept": self.RequestContentType },
+                success: function (data) {
+                    var theSearchResults = new SearchResults();
+                    theSearchResults.RawJson = JSON.parse(data.body);
+                    theSearchResults.BuildResultObject();
+                    successFunc(theSearchResults);
+                },
+                error: function (data, status, error) {
+                    failureFunc(data);
+                }
+            });
+        });
+        
     };
 }
 
