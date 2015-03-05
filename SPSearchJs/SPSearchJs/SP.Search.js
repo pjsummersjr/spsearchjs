@@ -37,6 +37,8 @@
 
         if (self.SourceId != "") queryExpr += "&sourceid='" + self.SourceId + "'";
 
+        if (self.GraphQuery != "") queryExpr += "&Properties='GraphQuery:" + self.GraphQuery + "'";
+
         if (self.SortFields != null && self.SortFields != "") queryExpr += "&sortlist='" + self.SortFields + "'";
 
         if (self.RefinementFilters.length > 0) {
@@ -89,7 +91,7 @@
 
         var searchUrl = appWebUrl + "/_api/search/query?" + queryParamStr;
 
-        $.getScript(self.SPSite + self.ScriptBase + "SP.RequestExecutor.js", function(data) {
+        $.getScript(self.SPSite + self.ScriptBase + "SP.RequestExecutor.js", function (data) {
             var executor = new SP.RequestExecutor(appWebUrl);
             executor.executeAsync({
                 url: searchUrl,
@@ -106,7 +108,7 @@
                 }
             });
         });
-        
+
     };
 }
 
@@ -143,7 +145,7 @@ function SearchResults() {
 
     self.GetMetaData = function () {
         self.ElapsedTime = self.RawJson.d.query.ElapsedTime;
-        if (self.RawJson.d.query.PrimaryQueryResult.RelevantResults != null) {
+        if (self.RawJson.d.query.PrimaryQueryResult != null && self.RawJson.d.query.PrimaryQueryResult.RelevantResults != null) {
             self.TotalHits = self.RawJson.d.query.PrimaryQueryResult.RelevantResults.TotalRows;
         }
     };
@@ -226,8 +228,13 @@ function ParseResultsTable(resultsObj) {
                 //Replaces line feed and carriage return characters that break the JSON parsing in IE
                 theValue = theValue.replace(/[\n\r]/g, '');
             }
-
-            fieldJsonStr += "\"" + fields[j].Key + "\":\"" + theValue + "\"";
+            if (theValue != null && theValue.indexOf("[") == 0) {
+                fieldJsonStr += "\"" + fields[j].Key + "\":" + theValue;
+            }
+            else {
+                fieldJsonStr += "\"" + fields[j].Key + "\":\"" + theValue + "\"";
+            }
+            
         }
         fieldJsonStr += '}';
         aSearchResult.fields = JSON.parse(fieldJsonStr);
