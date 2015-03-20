@@ -37,7 +37,7 @@
 
         if (self.SourceId != "") queryExpr += "&sourceid='" + self.SourceId + "'";
 
-        if (self.GraphQuery != "") queryExpr += "&Properties='GraphQuery:" + self.GraphQuery + "'";
+        if (self.Properties != "") queryExpr += "&Properties='" + self.Properties + "'";
 
         if (self.SortFields != null && self.SortFields != "") queryExpr += "&sortlist='" + self.SortFields + "'";
 
@@ -138,10 +138,14 @@ function SearchResults() {
         if (self.RawJson == null) return null;
 
         self.GetMetaData();
-        self.Refiners = self.GetRefiners(self.RawJson);
-        self.Results = self.GetResults(self.RawJson);
+
+        if (self.RawJson.d.query.PrimaryQueryResult != null) {
+            self.Refiners = self.GetRefiners(self.RawJson);
+            self.Results = self.GetResults(self.RawJson);
+        }
+
         self.SecondaryResults = self.GetSecondaryResults(self.RawJson);
-    };
+    }
 
     self.GetMetaData = function () {
         self.ElapsedTime = self.RawJson.d.query.ElapsedTime;
@@ -182,7 +186,7 @@ function SearchResults() {
     };
 
     self.GetSecondaryResults = function (resultsJson) {
-        if (resultsJson == null) return;
+        if (resultsJson.d.query.SecondaryQueryResults == null) return;
 
         var theResults = [];
 
@@ -272,4 +276,3 @@ function SearchRefinementItem(propertyName, displayValue, filterValue, count) {
     };
 
 }
-
