@@ -35,7 +35,7 @@ function BuildQuery (queryParams) {
 
         if (queryParams.SourceId != "") queryExpr += "&sourceid='" + queryParams.SourceId + "'";
 
-        if (queryParams.Properties != "") queryExpr += "&Properties='" + queryParams.Properties + "'";
+        if (queryParams.Properties != "") queryExpr += "&properties='" + queryParams.Properties + "'";
 
         if (queryParams.SortFields != null && queryParams.SortFields != "") queryExpr += "&sortlist='" + queryParams.SortFields + "'";
 
