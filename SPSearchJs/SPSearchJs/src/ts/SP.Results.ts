@@ -61,12 +61,25 @@ export class SPSearchResultSet {
             finalResults.TotalResponseTime = rawData['ElapsedTime'];
 
             if(rawData['PrimaryQueryResult'] != null){
-                finalResults.PrimaryResults = new SPSearchResults();
                 
+                finalResults.PrimaryResults = new SPSearchResults();
+                if(rawData['RelevantResults'] != null){
+                    finalResults.PrimaryResults.TotalItems = rawData['RelevantResults']['TotalRows'];
+                    finalResults.PrimaryResults.ResultItems = 
+                    this._processResultTable(rawData['RelevantResults']['Table']['Rows'])
+                    
+                }
             }
 
         }
 
         return null;
     }
+
+    protected static _processResultTable(resultTable: JSON): SPSearchResult[] {
+        let results: SPSearchResult[];
+        return results;
+    }
+
+
 }
