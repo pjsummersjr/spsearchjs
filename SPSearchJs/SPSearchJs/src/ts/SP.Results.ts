@@ -1,3 +1,88 @@
+import {
+    ISearchResults,
+    ISearchResult,
+    ISearchResultItem,
+    ISearchResultField
+
+} from "./ISearch"
+
+
+
+export class SPSearchResult implements ISearchResult {
+    items = [];
+    totalItems = 0;
+    type = "Primary";
+
+    public static getSearchResultFromJson(data: any): ISearchResult {
+        let searchResult: ISearchResult = new SPSearchResult();
+        
+        searchResult.totalItems = data.TotalRows;
+
+        if(data.Table != null && data.Table.Rows != null){
+            //Process each row (result) in the result set
+            data.Table.Rows.map((row, i) => {
+                searchResult.items.push(
+                    //each row contains Cells which contain Key(property name), value and data type
+                    SPSearchResultItem.getSearchresultItemFromRow(row)
+                );
+            });
+        }
+
+        return searchResult;
+    }
+}
+
+export class SPSearchResultItem implements ISearchResultItem {
+    fields = [];
+
+    public static getSearchresultItemFromRow(data: any): ISearchResultItem {
+        let searchResultItem = new SPSearchResultItem();
+        let jsonResult = "{";
+        data.Cells.map((cell, i) =>{
+            if(i > 0){
+                jsonResult += ",";
+            }
+            let theValue = "";
+            if(cell.Value != null){
+                theValue = cell.Value;    
+            }   
+            jsonResult += "\"" + cell.Key + "\":\"" + theValue.replace(/[\n\r]/g, '') + "\"";                                 
+            //searchResultItem.fields.push(
+            //    "{\"" + cell.Key + ":\"" + cell.Value + "\"}"
+            //);
+        })
+        jsonResult += "}";
+        searchResultItem.fields = JSON.parse(jsonResult);
+        return searchResultItem;
+    }
+}
+
+export class SPSearchResults implements ISearchResults {
+    data = [];
+    private PrimarySearchResult: ISearchResult;
+    private SecondarySearchResult: ISearchResult;
+
+    public static getSearchResultsFromJson(response: any): ISearchResults{
+        let searchResults = new SPSearchResults();
+        if(response.PrimaryQueryResult != null && response.PrimaryQueryResult.RelevantResults != null) {
+            searchResults.PrimarySearchResult = SPSearchResult.getSearchResultFromJson(response.PrimaryQueryResult.RelevantResults);
+            searchResults.PrimarySearchResult.type = "Primary";    
+            searchResults.data.push(searchResults.PrimarySearchResult);
+        }
+/*
+        if(response.SecondaryQueryResult != null && response.SecondaryQueryResult.RelevantResults != null){
+            searchResults.SecondarySearchResult = SPSearchResult.getSearchResultFromJson(response.SecondaryQueryResult.RelevantResults);
+            searchResults.SecondarySearchResult.type = "Secondary";
+            searchResults.data.push(searchResults.SecondarySearchResult);
+        }
+*/        
+
+        return searchResults;
+    }
+
+
+}
+
 export class SPSearchRefiner {
     DisplayName:string;
     PropertyName:string;
@@ -28,58 +113,4 @@ export class SPRefinementItem {
         }
         return rawDisplayValue;
     };
-}
-
-export class SPSearchResults {
-    TotalItems: number;
-    ResponseTime: number;
-    ResultItems: SPSearchResult[];
-    Refiners: SPSearchRefiner[];
-}
-
-export class SPSearchResult {
-    ResultFields: SPSearchResultField[];
-}
-
-export class SPSearchResultField {
-    FieldName: string;
-    FieldValue: any;
-}
-
-export class SPSearchResultSet {
-    TotalResponseTime: number;
-    PrimaryResults: SPSearchResults;
-    SecondaryResults: SPSearchResults;
-
-    public static ProcessResults(rawData: JSON): SPSearchResultSet {
-
-        if(rawData == null) { return null; }
-
-        let finalResults = new SPSearchResultSet();
-
-        if(rawData['ElapsedTime'] != null) {
-            finalResults.TotalResponseTime = rawData['ElapsedTime'];
-
-            if(rawData['PrimaryQueryResult'] != null){
-                
-                finalResults.PrimaryResults = new SPSearchResults();
-                if(rawData['RelevantResults'] != null){
-                    finalResults.PrimaryResults.TotalItems = rawData['RelevantResults']['TotalRows'];
-                    finalResults.PrimaryResults.ResultItems = 
-                    this._processResultTable(rawData['RelevantResults']['Table']['Rows'])
-                    
-                }
-            }
-
-        }
-
-        return null;
-    }
-
-    protected static _processResultTable(resultTable: JSON): SPSearchResult[] {
-        let results: SPSearchResult[];
-        return results;
-    }
-
-
 }

@@ -1,9 +1,13 @@
 import { 
-    SPSearchResultSet, 
-    SPSearchResults,
+    SPSearchResults, 
     SPSearchResult,
+    SPSearchResultItem,
     SPSearchRefiner,
     SPRefinementItem } from "./SP.Results";
+
+import {
+    ISearchClient
+} from "./ISearch";
 
 export enum GQLActions {
     PERSONAL_FEED = 1021,            //Private
@@ -18,7 +22,7 @@ export enum GQLActions {
     WORKING_WITH_PUBLIC = 1033       //Public
 }
 
-export class SPQuery {
+export class SPQuery  {
     SPSite : string = "";
     SearchAPIPath : string = "/_api/search/query";
     ScriptBase : string = "/_layouts/15/";
@@ -77,5 +81,7 @@ export class SPQuery {
 
         return queryExpr;
     }  
+
+
 
 }
