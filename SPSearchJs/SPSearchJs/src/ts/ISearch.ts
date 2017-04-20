@@ -1,5 +1,10 @@
 export interface ISearchClient {
-    getSearchResults(): Promise<ISearchResults>;
+    getSearchResults(query: string): Promise<ISearchResults>;
+}
+
+export interface ISearchQuery {
+    BuildQuery() : string;
+    GetRequestString(): string;
 }
 
 export interface ISearchResults {
