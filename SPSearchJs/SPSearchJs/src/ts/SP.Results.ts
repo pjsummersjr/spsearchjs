@@ -62,7 +62,7 @@ export class SPSearchResults implements ISearchResults {
     private PrimarySearchResult: ISearchResult;
     private SecondarySearchResult: ISearchResult;
 
-    public static getSearchResultsFromJson(response: any): ISearchResults{
+    public static getSearchResultsFromJson(response: any): ISearchResults {
         let searchResults = new SPSearchResults();
         if(response.PrimaryQueryResult != null && response.PrimaryQueryResult.RelevantResults != null) {
             searchResults.PrimarySearchResult = SPSearchResult.getSearchResultFromJson(response.PrimaryQueryResult.RelevantResults);
@@ -79,8 +79,6 @@ export class SPSearchResults implements ISearchResults {
 
         return searchResults;
     }
-
-
 }
 
 export class SPSearchRefiner {

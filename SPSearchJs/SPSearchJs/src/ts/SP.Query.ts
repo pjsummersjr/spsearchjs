@@ -66,7 +66,7 @@ export class SPQuery  {
             for (var i = 0; i < queryParams.RefinementFilters.length; i++) {
                 if (queryParams.RefinementFilters.length > 1 && i == 0) refinementStr += "and(";
                 if (i > 0) refinementStr += ",";
-                refinementStr += queryParams.RefinementFilters[i].PropertyName + ":ends-with(\"" + queryParams.RefinementFilters[i].GetDisplayString(RefinementFilters[i].FilterValue) + "\")";
+                refinementStr += queryParams.RefinementFilters[i].PropertyName + ":ends-with(\"" + queryParams.RefinementFilters[i].GetDisplayString(queryParams.RefinementFilters[i].FilterValue) + "\")";
             }
             if (queryParams.RefinementFilters.length > 1) refinementStr += ")";
             queryExpr += refinementStr + "'";
