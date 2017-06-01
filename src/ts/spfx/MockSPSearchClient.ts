@@ -1,8 +1,8 @@
 import { ISearchResults,
         ISearchResult,
-        ISearchClient } from '../ISearch';
+        ISearchClient } from '../core/ISearch';
 
-import { SPSearchResults } from '../SP.Results';
+import { SPSearchResults } from '../core/SP.Results';
 
 export class MockSPSearchClient implements ISearchClient {
     private _results: ISearchResults;
