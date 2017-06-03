@@ -1,7 +1,7 @@
 import { ISearchResults,
-        ISearchClient } from '../ISearch';
+        ISearchClient } from '../core/ISearch';
 
-import { SPSearchResults } from '../SP.Results';
+import { SPSearchResults } from '../core/SP.Results';
 
 import {
     SPHttpClient,

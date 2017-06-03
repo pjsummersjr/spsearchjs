@@ -1,16 +1,18 @@
 import { ISearchResults,
         ISearchResult,
-        ISearchClient } from '../core/ISearch';
+        ISearchClient } from './ISearch';
 
-import { SPSearchResults } from '../core/SP.Results';
+import { SPSearchResults } from './SP.Results';
 
 export class MockSPSearchClient implements ISearchClient {
     private _results: ISearchResults;
     
     public getSearchResults(query: string): Promise<ISearchResults> {
-        return new Promise<ISearchResults>((resolve) => {
-            this._results = SPSearchResults.getSearchResultsFromJson(this.CreateSearchResult(this._result1));
-            return resolve(this._results);
+        
+        this._results = SPSearchResults.getSearchResultsFromJson(this.CreateSearchResult(this._result1));
+        
+        return new Promise<ISearchResults>((resolve) => {            
+            resolve(this._results);
         });
     }
 
