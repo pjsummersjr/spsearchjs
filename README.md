@@ -19,3 +19,18 @@ Upon success of the RunSearch method, the success callback method accepts the Se
   * Display Name
   * Property Name
   * RefinementItems - Array of SearchRefinementItem (Property Name, Display Value, ,Filter Value, Count)
+
+
+##### Unit Testing
+I leveraged the following resources to define my unit test strategy: 
+* https://journal.artfuldev.com/write-tests-for-typescript-projects-with-mocha-and-chai-in-typescript-86e053bdb2b6
+* http://mochajs.org/#examples
+
+These are the steps required to get my test architecture working:
+* npm install mocha chai ts-node -g
+* npm install mocha chai ts-node --save-dev
+* npm install @typings/chai @typings/mocha --save-dev
+* mocha -r ts-node/register test/*.ts
+
+Test cases are defined [here](UNITTESTS.md "Unit Test Descriptions")
+

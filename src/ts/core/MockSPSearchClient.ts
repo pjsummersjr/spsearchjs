@@ -6,6 +6,10 @@ import { SPSearchResults } from './SP.Results';
 
 export class MockSPSearchClient implements ISearchClient {
     private _results: ISearchResults;
+
+    public constructor(){
+        
+    }
     
     public getSearchResults(query: string): Promise<ISearchResults> {
         
@@ -14,6 +18,10 @@ export class MockSPSearchClient implements ISearchClient {
         return new Promise<ISearchResults>((resolve) => {            
             resolve(this._results);
         });
+    }
+
+    public getSomething(query: string): string {
+        return query + " Something Good";
     }
 
     private CreateSearchResult(data: any) : any {
