@@ -20,7 +20,7 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                exclude: /node_modules/,
+                exclude: ['/node_modules/', '/src/ts/spfx/'],
                 use: [
                     {
                         loader: 'babel-loader',
