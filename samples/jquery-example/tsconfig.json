@@ -4,11 +4,8 @@
         "forceConsistentCasingInFileNames": true,
         "module": "commonjs",
         "jsx": "react",
-        "declaration": true,
-        "sourceMap": true
-    },
-    "exclude": [
-        "samples",
-        "node_modules"
-    ]
+        "declaration": false,
+        "sourceMap": true,
+        "allowJs": true
+    } 
 }

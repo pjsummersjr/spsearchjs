@@ -3,6 +3,7 @@ import { ISearchResults,
         ISearchClient } from './ISearch';
 
 import { SPSearchResults } from './SP.Results';
+import { SPQuery } from './SP.Query';
 
 export class MockSPSearchClient implements ISearchClient {
     private _results: ISearchResults;
@@ -12,6 +13,8 @@ export class MockSPSearchClient implements ISearchClient {
     }
     
     public getSearchResults(query: string): Promise<ISearchResults> {
+
+        let queryObj = new SPQuery("");
         
         this._results = SPSearchResults.getSearchResultsFromJson(this.CreateSearchResult(this._result1));
         

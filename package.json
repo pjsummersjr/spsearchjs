@@ -2,7 +2,8 @@
   "name": "spsearchjs",
   "version": "1.0.0",
   "description": "Javascript library for integrating with search in Office 365",
-  "main": "webpack.config.js",
+  "main": "lib/spsearch.js",
+  "module": "./src/index.ts",
   "directories": {
     "lib": "lib",
     "test": "test"

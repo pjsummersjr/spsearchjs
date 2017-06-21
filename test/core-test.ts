@@ -2,8 +2,8 @@ import 'mocha';
 
 import {expect}  from 'chai';
 
-import { MockSPSearchClient } from '../src/ts/core/MockSPSearchClient';
-import { ISearchClient, ISearchResults, ISearchResult } from '../src/ts/core/ISearch';
+import { MockSPSearchClient } from '../src/MockSPSearchClient';
+import { ISearchClient, ISearchResults, ISearchResult } from '../src/ISearch';
 
 describe('Array', function(){
     describe('#indexOf()', function() {

@@ -8,20 +8,19 @@ var babelOptions = {
 }
 
 module.exports = {
-    
-    entry: './src/index.ts',
+    context: __dirname + '/src/',
+    entry: {
+        bundle: './app.ts'
+    },
     output: {
-        filename: 'spsearch.js',
-        path: __dirname + '/lib/',
-        library: "spsearchjs",
-        libraryTarget: "commonjs"
+        filename: '[name].js',
+        path: __dirname + '/lib/'
     },
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
-                exclude: ['/node_modules/', 
-                        __dirname + "/src/ts/spfx/"
+                exclude: ['/node_modules/'
                         ],
                 use: [
                     {
@@ -48,10 +47,6 @@ module.exports = {
     resolve: {
         extensions: ['.ts','.tsx','.js','.json']
     },
-    devtool: "source-map",
-    externals : [
-        "@microsoft/sp-http",
-        "@microsoft/sp-webpart-base"
-        ]
+    devtool: "source-map"
     
 }

@@ -4,7 +4,6 @@ export interface ISearchClient {
 
 export interface ISearchQuery {
     BuildQuery() : string;
-    GetRequestString(): string;
 }
 
 export interface ISearchResults {
