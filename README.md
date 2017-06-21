@@ -36,3 +36,15 @@ mocha -r ts-node/register test/*.ts
 
 Test cases are defined [here](UNITTESTS.md "Unit Test Descriptions")
 
+##### Library Build Instructions
+The webpack output configuration seems to define it as a consumable module.
+Run webpack to build the library
+To consume the library from project in samples, run:
+``` 
+npm link
+```
+And then in the sample project:
+``` 
+npm link spsearchjs
+```
+
