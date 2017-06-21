@@ -47,4 +47,8 @@ And then in the sample project:
 ``` 
 npm link spsearchjs
 ```
+A few considerations...
+* While trying to figure out this build process, I was deleting the lib directory in the core library structure to ensure it was rebuilt properly. I tested this and it doesn't appear necessary.
+* I was also deleting the linked library in the sample and that doesn't appear necessary either
 
+Library build guidance [here](https://webpack.js.org/guides/author-libraries/ "Webpack Authoring Libraries")
