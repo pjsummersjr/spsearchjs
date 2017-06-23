@@ -11,16 +11,22 @@
     </head>
 <body>  
     <div class="container">
-        <div id="title">SharePoint jQuery Search Example - Checking</div> 
+        <div id="title">SharePoint jQuery Search Example</div> 
+        <div class="row">
+            <div class="col-md-6">
+                <button type="button" id="loginButton" class="btn" style="display:none">Login</button>
+                <button type="button" id="logoutButton" class="btn" style="display:none">Logout</button>
+            </div>
+        </div>
         <div id="info"></div>
         <div id="searchInputContainer" class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <input type="text" id="searchInput" class="form-control spsearchbox" placeholder="Search..."  />
             </div>
             <div class="col col-md-2">
                 <button type="button" id="searchButton" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>Search</button> 
             </div>
-            <div class="col col-md-4"></div>
+            <div class="col col-md-6"></div>
         </div>
     </div>
     <script src="lib/bundle.js"></script>

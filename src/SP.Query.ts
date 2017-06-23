@@ -41,6 +41,11 @@ export class SPQuery implements ISearchQuery  {
         this.SPSite = spSite;
     }
 
+    public GetRequest(): string {
+        let query = this.BuildQuery();
+        return this.SPSite + this.SearchAPIPath + "?" + query;
+    }
+
     public BuildQuery (): string {
 
         let queryExpr = "querytext='" + this.QueryText.trim() + "'";

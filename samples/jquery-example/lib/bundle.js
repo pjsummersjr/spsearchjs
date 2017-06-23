@@ -63,275 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var GQLActions;
-(function (GQLActions) {
-    GQLActions[GQLActions["PERSONAL_FEED"] = 1021] = "PERSONAL_FEED";
-    GQLActions[GQLActions["MODIFIED"] = 1003] = "MODIFIED";
-    GQLActions[GQLActions["ORG_COLLEAGUES"] = 1015] = "ORG_COLLEAGUES";
-    GQLActions[GQLActions["ORG_DIRECT"] = 1014] = "ORG_DIRECT";
-    GQLActions[GQLActions["ORG_MANAGER"] = 1013] = "ORG_MANAGER";
-    GQLActions[GQLActions["ORG_SKIP_LEVEL_MANAGER"] = 1016] = "ORG_SKIP_LEVEL_MANAGER";
-    GQLActions[GQLActions["WORKING_WITH"] = 1019] = "WORKING_WITH";
-    GQLActions[GQLActions["TRENDING_AROUND"] = 1020] = "TRENDING_AROUND";
-    GQLActions[GQLActions["VIEWED"] = 1001] = "VIEWED";
-    GQLActions[GQLActions["WORKING_WITH_PUBLIC"] = 1033] = "WORKING_WITH_PUBLIC"; //Public
-})(GQLActions = exports.GQLActions || (exports.GQLActions = {}));
-
-var SPQuery = function () {
-    function SPQuery(spSite) {
-        _classCallCheck(this, SPQuery);
-
-        this.SPSite = "";
-        this.SearchAPIPath = "/_api/search/query";
-        this.ScriptBase = "/_layouts/15/";
-        this.QueryText = "";
-        this.SourceId = "";
-        this.SortFields = "";
-        this.SelectProperties = [];
-        this.Properties = "";
-        this.GraphQuery = "";
-        this.Refiners = "";
-        this.RefinementFilters = [];
-        this.RankingModelId = "";
-        this.StartRow = 0;
-        this.RowLimit = 10;
-        this.EnableStemming = true;
-        this.EnablePhonetic = true;
-        this.EnableFQL = false;
-        this.EnableQueryRules = true;
-        this.RequestMethod = "GET";
-        this.RequestContentType = "application/json;odata=verbose";
-        this.SPSite = spSite;
-        //console.log("Query object initialized with spsite: " + this.SPSite);
-    }
-
-    _createClass(SPQuery, [{
-        key: "BuildQuery",
-        value: function BuildQuery() {
-            var queryExpr = "querytext='" + this.QueryText.trim() + "'";
-            queryExpr += "&selectproperties='" + this.SelectProperties + "'";
-            queryExpr += "&refiners='" + this.Refiners + "'";
-            if (this.SourceId != "") queryExpr += "&sourceid='" + this.SourceId + "'";
-            if (this.Properties != "") queryExpr += "&properties='" + this.Properties + "'";
-            if (this.SortFields != null && this.SortFields != "") queryExpr += "&sortlist='" + this.SortFields + "'";
-            if (this.RefinementFilters.length > 0) {
-                var refinementStr = "&refinementFilters='";
-                for (var i = 0; i < this.RefinementFilters.length; i++) {
-                    if (this.RefinementFilters.length > 1 && i == 0) refinementStr += "and(";
-                    if (i > 0) refinementStr += ",";
-                    refinementStr += this.RefinementFilters[i].PropertyName + ":ends-with(\"" + this.RefinementFilters[i].GetDisplayString(this.RefinementFilters[i].FilterValue) + "\")";
-                }
-                if (this.RefinementFilters.length > 1) refinementStr += ")";
-                queryExpr += refinementStr + "'";
-            }
-            queryExpr += "&startrow=" + this.StartRow;
-            queryExpr += "&rowlimit=" + this.RowLimit;
-            queryExpr += "&enablefql=" + this.EnableFQL;
-            queryExpr += "&enablequeryrules=" + this.EnableQueryRules;
-            queryExpr += "&enablephonetic=" + this.EnablePhonetic;
-            queryExpr += "&enablestemming=" + this.EnableStemming;
-            return queryExpr;
-        }
-    }]);
-
-    return SPQuery;
-}();
-
-exports.SPQuery = SPQuery;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-Object.defineProperty(exports, "__esModule", { value: true });
-
-var SPSearchResult = function () {
-    function SPSearchResult() {
-        _classCallCheck(this, SPSearchResult);
-
-        this.items = [];
-        this.totalItems = 0;
-        this.type = "Primary";
-    }
-
-    _createClass(SPSearchResult, null, [{
-        key: "getSearchResultFromJson",
-        value: function getSearchResultFromJson(data) {
-            var searchResult = new SPSearchResult();
-            searchResult.totalItems = data.TotalRows;
-            if (data.Table != null && data.Table.Rows != null) {
-                //Process each row (result) in the result set
-                data.Table.Rows.map(function (row, i) {
-                    searchResult.items.push(
-                    //each row contains Cells which contain Key(property name), value and data type
-                    SPSearchResultItem.getSearchresultItemFromRow(row));
-                });
-            }
-            return searchResult;
-        }
-    }]);
-
-    return SPSearchResult;
-}();
-
-exports.SPSearchResult = SPSearchResult;
-
-var SPSearchResultItem = function () {
-    function SPSearchResultItem() {
-        _classCallCheck(this, SPSearchResultItem);
-
-        this.fields = [];
-    }
-
-    _createClass(SPSearchResultItem, null, [{
-        key: "getSearchresultItemFromRow",
-        value: function getSearchresultItemFromRow(data) {
-            var searchResultItem = new SPSearchResultItem();
-            var jsonResult = "{";
-            data.Cells.map(function (cell, i) {
-                if (i > 0) {
-                    jsonResult += ",";
-                }
-                var theValue = "";
-                if (cell.Value != null) {
-                    theValue = cell.Value;
-                }
-                jsonResult += "\"" + cell.Key + "\":\"" + theValue.replace(/[\n\r]/g, '') + "\"";
-                //searchResultItem.fields.push(
-                //    "{\"" + cell.Key + ":\"" + cell.Value + "\"}"
-                //);
-            });
-            jsonResult += "}";
-            searchResultItem.fields = JSON.parse(jsonResult);
-            return searchResultItem;
-        }
-    }]);
-
-    return SPSearchResultItem;
-}();
-
-exports.SPSearchResultItem = SPSearchResultItem;
-
-var SPSearchResults = function () {
-    function SPSearchResults() {
-        _classCallCheck(this, SPSearchResults);
-
-        this.data = [];
-    }
-
-    _createClass(SPSearchResults, null, [{
-        key: "getSearchResultsFromJson",
-        value: function getSearchResultsFromJson(response) {
-            var searchResults = new SPSearchResults();
-            if (response.PrimaryQueryResult != null && response.PrimaryQueryResult.RelevantResults != null) {
-                searchResults.PrimarySearchResult = SPSearchResult.getSearchResultFromJson(response.PrimaryQueryResult.RelevantResults);
-                searchResults.PrimarySearchResult.type = "Primary";
-                searchResults.data.push(searchResults.PrimarySearchResult);
-            }
-            /*
-                    if(response.SecondaryQueryResult != null && response.SecondaryQueryResult.RelevantResults != null){
-                        searchResults.SecondarySearchResult = SPSearchResult.getSearchResultFromJson(response.SecondaryQueryResult.RelevantResults);
-                        searchResults.SecondarySearchResult.type = "Secondary";
-                        searchResults.data.push(searchResults.SecondarySearchResult);
-                    }
-            */
-            return searchResults;
-        }
-    }]);
-
-    return SPSearchResults;
-}();
-
-exports.SPSearchResults = SPSearchResults;
-
-var SPSearchRefiner = function SPSearchRefiner(displayName, propertyName) {
-    _classCallCheck(this, SPSearchRefiner);
-
-    this.DisplayName = displayName;
-    this.PropertyName = propertyName;
-};
-
-exports.SPSearchRefiner = SPSearchRefiner;
-
-var SPRefinementItem = function () {
-    function SPRefinementItem(propertyName, displayValue, filterValue, count) {
-        _classCallCheck(this, SPRefinementItem);
-
-        this.PropertyName = propertyName;
-        this.DisplayValue = displayValue;
-        this.FilterValue = filterValue;
-        this.Count = count;
-    }
-
-    _createClass(SPRefinementItem, [{
-        key: "GetDisplayString",
-        value: function GetDisplayString(rawDisplayValue) {
-            if (rawDisplayValue.split('|').length > 0) {
-                return rawDisplayValue.split('|')[rawDisplayValue.split('|').length - 1];
-            }
-            return rawDisplayValue;
-        }
-    }]);
-
-    return SPRefinementItem;
-}();
-
-exports.SPRefinementItem = SPRefinementItem;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-Object.defineProperty(exports, "__esModule", { value: true });
-
-var JQuerySearchClient = function () {
-    function JQuerySearchClient() {
-        _classCallCheck(this, JQuerySearchClient);
-    }
-
-    _createClass(JQuerySearchClient, [{
-        key: "getSearchResults",
-        value: function getSearchResults(query) {
-            return Promise.resolve(null);
-        }
-    }]);
-
-    return JQuerySearchClient;
-}();
-
-exports.JQuerySearchClient = JQuerySearchClient;
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -343,12 +79,12 @@ function __export(m) {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(6));
-__export(__webpack_require__(0));
-__export(__webpack_require__(1));
+__export(__webpack_require__(7));
+__export(__webpack_require__(2));
+__export(__webpack_require__(3));
 
 /***/ }),
-/* 4 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10608,6 +10344,964 @@ return jQuery;
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var GQLActions;
+(function (GQLActions) {
+    GQLActions[GQLActions["PERSONAL_FEED"] = 1021] = "PERSONAL_FEED";
+    GQLActions[GQLActions["MODIFIED"] = 1003] = "MODIFIED";
+    GQLActions[GQLActions["ORG_COLLEAGUES"] = 1015] = "ORG_COLLEAGUES";
+    GQLActions[GQLActions["ORG_DIRECT"] = 1014] = "ORG_DIRECT";
+    GQLActions[GQLActions["ORG_MANAGER"] = 1013] = "ORG_MANAGER";
+    GQLActions[GQLActions["ORG_SKIP_LEVEL_MANAGER"] = 1016] = "ORG_SKIP_LEVEL_MANAGER";
+    GQLActions[GQLActions["WORKING_WITH"] = 1019] = "WORKING_WITH";
+    GQLActions[GQLActions["TRENDING_AROUND"] = 1020] = "TRENDING_AROUND";
+    GQLActions[GQLActions["VIEWED"] = 1001] = "VIEWED";
+    GQLActions[GQLActions["WORKING_WITH_PUBLIC"] = 1033] = "WORKING_WITH_PUBLIC"; //Public
+})(GQLActions = exports.GQLActions || (exports.GQLActions = {}));
+
+var SPQuery = function () {
+    function SPQuery(spSite) {
+        _classCallCheck(this, SPQuery);
+
+        this.SPSite = "";
+        this.SearchAPIPath = "/_api/search/query";
+        this.ScriptBase = "/_layouts/15/";
+        this.QueryText = "";
+        this.SourceId = "";
+        this.SortFields = "";
+        this.SelectProperties = [];
+        this.Properties = "";
+        this.GraphQuery = "";
+        this.Refiners = "";
+        this.RefinementFilters = [];
+        this.RankingModelId = "";
+        this.StartRow = 0;
+        this.RowLimit = 10;
+        this.EnableStemming = true;
+        this.EnablePhonetic = true;
+        this.EnableFQL = false;
+        this.EnableQueryRules = true;
+        this.RequestMethod = "GET";
+        this.RequestContentType = "application/json;odata=verbose";
+        this.SPSite = spSite;
+    }
+
+    _createClass(SPQuery, [{
+        key: "GetRequest",
+        value: function GetRequest() {
+            var query = this.BuildQuery();
+            return this.SPSite + this.SearchAPIPath + "?" + query;
+        }
+    }, {
+        key: "BuildQuery",
+        value: function BuildQuery() {
+            var queryExpr = "querytext='" + this.QueryText.trim() + "'";
+            queryExpr += "&selectproperties='" + this.SelectProperties + "'";
+            queryExpr += "&refiners='" + this.Refiners + "'";
+            if (this.SourceId != "") queryExpr += "&sourceid='" + this.SourceId + "'";
+            if (this.Properties != "") queryExpr += "&properties='" + this.Properties + "'";
+            if (this.SortFields != null && this.SortFields != "") queryExpr += "&sortlist='" + this.SortFields + "'";
+            if (this.RefinementFilters.length > 0) {
+                var refinementStr = "&refinementFilters='";
+                for (var i = 0; i < this.RefinementFilters.length; i++) {
+                    if (this.RefinementFilters.length > 1 && i == 0) refinementStr += "and(";
+                    if (i > 0) refinementStr += ",";
+                    refinementStr += this.RefinementFilters[i].PropertyName + ":ends-with(\"" + this.RefinementFilters[i].GetDisplayString(this.RefinementFilters[i].FilterValue) + "\")";
+                }
+                if (this.RefinementFilters.length > 1) refinementStr += ")";
+                queryExpr += refinementStr + "'";
+            }
+            queryExpr += "&startrow=" + this.StartRow;
+            queryExpr += "&rowlimit=" + this.RowLimit;
+            queryExpr += "&enablefql=" + this.EnableFQL;
+            queryExpr += "&enablequeryrules=" + this.EnableQueryRules;
+            queryExpr += "&enablephonetic=" + this.EnablePhonetic;
+            queryExpr += "&enablestemming=" + this.EnableStemming;
+            return queryExpr;
+        }
+    }]);
+
+    return SPQuery;
+}();
+
+exports.SPQuery = SPQuery;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+var SPSearchResult = function () {
+    function SPSearchResult() {
+        _classCallCheck(this, SPSearchResult);
+
+        this.items = [];
+        this.totalItems = 0;
+        this.type = "Primary";
+    }
+
+    _createClass(SPSearchResult, null, [{
+        key: "getSearchResultFromJson",
+        value: function getSearchResultFromJson(data) {
+            var searchResult = new SPSearchResult();
+            searchResult.totalItems = data.TotalRows;
+            if (data.Table != null && data.Table.Rows != null) {
+                //Process each row (result) in the result set
+                data.Table.Rows.map(function (row, i) {
+                    searchResult.items.push(
+                    //each row contains Cells which contain Key(property name), value and data type
+                    SPSearchResultItem.getSearchresultItemFromRow(row));
+                });
+            }
+            return searchResult;
+        }
+    }]);
+
+    return SPSearchResult;
+}();
+
+exports.SPSearchResult = SPSearchResult;
+
+var SPSearchResultItem = function () {
+    function SPSearchResultItem() {
+        _classCallCheck(this, SPSearchResultItem);
+
+        this.fields = [];
+    }
+
+    _createClass(SPSearchResultItem, null, [{
+        key: "getSearchresultItemFromRow",
+        value: function getSearchresultItemFromRow(data) {
+            var searchResultItem = new SPSearchResultItem();
+            var jsonResult = "{";
+            data.Cells.map(function (cell, i) {
+                if (i > 0) {
+                    jsonResult += ",";
+                }
+                var theValue = "";
+                if (cell.Value != null) {
+                    theValue = cell.Value;
+                }
+                jsonResult += "\"" + cell.Key + "\":\"" + theValue.replace(/[\n\r]/g, '') + "\"";
+                //searchResultItem.fields.push(
+                //    "{\"" + cell.Key + ":\"" + cell.Value + "\"}"
+                //);
+            });
+            jsonResult += "}";
+            searchResultItem.fields = JSON.parse(jsonResult);
+            return searchResultItem;
+        }
+    }]);
+
+    return SPSearchResultItem;
+}();
+
+exports.SPSearchResultItem = SPSearchResultItem;
+
+var SPSearchResults = function () {
+    function SPSearchResults() {
+        _classCallCheck(this, SPSearchResults);
+
+        this.data = [];
+    }
+
+    _createClass(SPSearchResults, null, [{
+        key: "getSearchResultsFromJson",
+        value: function getSearchResultsFromJson(response) {
+            var searchResults = new SPSearchResults();
+            if (response.PrimaryQueryResult != null && response.PrimaryQueryResult.RelevantResults != null) {
+                searchResults.PrimarySearchResult = SPSearchResult.getSearchResultFromJson(response.PrimaryQueryResult.RelevantResults);
+                searchResults.PrimarySearchResult.type = "Primary";
+                searchResults.data.push(searchResults.PrimarySearchResult);
+            }
+            /*
+                    if(response.SecondaryQueryResult != null && response.SecondaryQueryResult.RelevantResults != null){
+                        searchResults.SecondarySearchResult = SPSearchResult.getSearchResultFromJson(response.SecondaryQueryResult.RelevantResults);
+                        searchResults.SecondarySearchResult.type = "Secondary";
+                        searchResults.data.push(searchResults.SecondarySearchResult);
+                    }
+            */
+            return searchResults;
+        }
+    }]);
+
+    return SPSearchResults;
+}();
+
+exports.SPSearchResults = SPSearchResults;
+
+var SPSearchRefiner = function SPSearchRefiner(displayName, propertyName) {
+    _classCallCheck(this, SPSearchRefiner);
+
+    this.DisplayName = displayName;
+    this.PropertyName = propertyName;
+};
+
+exports.SPSearchRefiner = SPSearchRefiner;
+
+var SPRefinementItem = function () {
+    function SPRefinementItem(propertyName, displayValue, filterValue, count) {
+        _classCallCheck(this, SPRefinementItem);
+
+        this.PropertyName = propertyName;
+        this.DisplayValue = displayValue;
+        this.FilterValue = filterValue;
+        this.Count = count;
+    }
+
+    _createClass(SPRefinementItem, [{
+        key: "GetDisplayString",
+        value: function GetDisplayString(rawDisplayValue) {
+            if (rawDisplayValue.split('|').length > 0) {
+                return rawDisplayValue.split('|')[rawDisplayValue.split('|').length - 1];
+            }
+            return rawDisplayValue;
+        }
+    }]);
+
+    return SPRefinementItem;
+}();
+
+exports.SPRefinementItem = SPRefinementItem;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["adal-ts"] = factory();
+	else
+		root["adal-ts"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Constants = {
+    ACCESS_TOKEN: 'access_token',
+    EXPIRES_IN: 'expires_in',
+    ID_TOKEN: 'id_token',
+    ERROR_DESCRIPTION: 'error_description',
+    SESSION_STATE: 'session_state',
+    STORAGE: {
+        TOKEN_KEYS: 'adal.token.keys',
+        ACCESS_TOKEN_KEY: 'adal.access.token.key',
+        EXPIRATION_KEY: 'adal.expiration.key',
+        STATE_LOGIN: 'adal.state.login',
+        STATE_RENEW: 'adal.state.renew',
+        NONCE_IDTOKEN: 'adal.nonce.idtoken',
+        SESSION_STATE: 'adal.session.state',
+        USERNAME: 'adal.username',
+        IDTOKEN: 'adal.idtoken',
+        ACCESSTOKEN: 'adal.accesstoken',
+        ERROR: 'adal.error',
+        ERROR_DESCRIPTION: 'adal.error.description',
+        LOGIN_REQUEST: 'adal.login.request',
+        LOGIN_ERROR: 'adal.login.error',
+        RENEW_STATUS: 'adal.token.renew.status'
+    },
+    RESOURCE_DELIMETER: '|',
+    LOADFRAME_TIMEOUT: '6000',
+    TOKEN_RENEW_STATUS_CANCELED: 'Canceled',
+    TOKEN_RENEW_STATUS_COMPLETED: 'Completed',
+    TOKEN_RENEW_STATUS_IN_PROGRESS: 'In Progress',
+    LOGGING_LEVEL: {
+        ERROR: 0,
+        WARN: 1,
+        INFO: 2,
+        VERBOSE: 3
+    },
+    LEVEL_STRING_MAP: {
+        0: 'ERROR:',
+        1: 'WARNING:',
+        2: 'INFO:',
+        3: 'VERBOSE:'
+    }
+};
+exports.RequestTypes = {
+    LOGIN: 'LOGIN',
+    RENEW_TOKEN: 'RENEW_TOKEN',
+    UNKNOWN: 'UNKNOWN'
+};
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var constants_1 = __webpack_require__(0);
+var AuthenticationContext = (function () {
+    function AuthenticationContext(config, storage, navigator, guidGenerator, aadUrlBuilder, userDecoder, logoutUrlBuilder) {
+        this.CONSTANTS = constants_1.Constants;
+        this.REQUEST_TYPES = constants_1.RequestTypes;
+        this.storage = storage;
+        this.navigator = navigator;
+        this.config = config;
+        this.guidGenerator = guidGenerator;
+        this.aadUrlBuilder = aadUrlBuilder;
+        this.userDecoder = userDecoder;
+        this.logoutUrlBuilder = logoutUrlBuilder;
+    }
+    AuthenticationContext.prototype.login = function () {
+        if (this.loginInProgress) {
+            this.info('Login in progress');
+            return;
+        }
+        var urlConfig = this.cloneConfig(this.config);
+        urlConfig.nonce = this.guidGenerator.generate();
+        urlConfig.state = this.guidGenerator.generate();
+        this.verbose('Expected state: ' + urlConfig.state + ' startPage:' + window.location);
+        this.storage.setItem(this.CONSTANTS.STORAGE.LOGIN_REQUEST, window.location);
+        this.storage.setItem(this.CONSTANTS.STORAGE.STATE_LOGIN, urlConfig.state);
+        this.storage.setItem(this.CONSTANTS.STORAGE.NONCE_IDTOKEN, urlConfig.nonce);
+        this.storage.setItem(this.CONSTANTS.STORAGE.LOGIN_ERROR, '');
+        this.storage.setItem(this.CONSTANTS.STORAGE.ERROR, '');
+        this.storage.setItem(this.CONSTANTS.STORAGE.ERROR_DESCRIPTION, '');
+        var url = this.aadUrlBuilder.with(urlConfig).build();
+        this.navigator.navigate(url);
+        this.loginInProgress = true;
+    };
+    AuthenticationContext.prototype.getUser = function () {
+        var idtoken = this.storage.getItem(constants_1.Constants.STORAGE.IDTOKEN) || this.storage.getItem(constants_1.Constants.STORAGE.ACCESSTOKEN);
+        try {
+            var user = this.userDecoder.decode(idtoken);
+            return user;
+        }
+        catch (error) {
+            if (console && console.debug)
+                console.debug('getUser() returns null on catched error. Details >> ' + error.toString());
+            return null;
+        }
+    };
+    AuthenticationContext.prototype.getToken = function () {
+        return this.storage.getItem(constants_1.Constants.STORAGE.IDTOKEN) || this.storage.getItem(constants_1.Constants.STORAGE.ACCESSTOKEN);
+    };
+    AuthenticationContext.prototype.getAccessToken = function (){
+        return this.storage.getItem(constants_1.Constants.STORAGE.ACCESSTOKEN);
+    };
+    AuthenticationContext.prototype.logout = function () {
+        if (this.getToken() === '')
+            return null;
+        this.storage.setItem(this.CONSTANTS.STORAGE.NONCE_IDTOKEN, '');
+        this.storage.setItem(this.CONSTANTS.STORAGE.STATE_LOGIN, '');
+        this.storage.setItem(this.CONSTANTS.STORAGE.IDTOKEN, '');
+        this.storage.setItem(this.CONSTANTS.STORAGE.ACCESSTOKEN, '');
+        var url = this.logoutUrlBuilder.with(this.config.tenant, this.config.postLogoutRedirectUrl).build();
+        this.navigator.navigate(url);
+    };
+    AuthenticationContext.prototype.verbose = function (message) {
+    };
+    AuthenticationContext.prototype.info = function (message) {
+    };
+    AuthenticationContext.prototype.createOptions = function () {
+        return {
+            nonce: this.idTokenNonce,
+            tenant: this.config.tenant,
+            clientId: this.config.clientId
+        };
+    };
+    AuthenticationContext.prototype.cloneConfig = function (obj) {
+        if (null === obj || 'object' !== typeof obj) {
+            return obj;
+        }
+        var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) {
+                copy[attr] = obj[attr];
+            }
+        }
+        return copy;
+    };
+    ;
+    return AuthenticationContext;
+}());
+exports.AuthenticationContext = AuthenticationContext;
+
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AdalConfig = (function () {
+    function AdalConfig(clientId, tenant, redirectUri, postLogoutRedirectUrl, responseType, extraQueryParameter) {
+        this.clientId = clientId;
+        this.tenant = tenant;
+        this.redirectUri = redirectUri;
+        this.postLogoutRedirectUrl = postLogoutRedirectUrl;
+        this.responseType = responseType;
+        this.extraQueryParameter = extraQueryParameter;
+    }
+    ;
+    return AdalConfig;
+}());
+exports.AdalConfig = AdalConfig;
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var authentication_context_1 = __webpack_require__(1);
+var local_storage_1 = __webpack_require__(9);
+var navigator_1 = __webpack_require__(10);
+var aad_url_builder_1 = __webpack_require__(7);
+var guid_generator_1 = __webpack_require__(8);
+var user_decoder_1 = __webpack_require__(12);
+var aad_redirect_processor_1 = __webpack_require__(5);
+var query_string_deserializer_1 = __webpack_require__(11);
+var aad_logout_url_builder_1 = __webpack_require__(4);
+var Authentication = (function () {
+    function Authentication() {
+    }
+    Authentication.getContext = function (configuration) {
+        console.log('getContext...');
+        var context = new authentication_context_1.AuthenticationContext(configuration, new local_storage_1.LocalStorage(), new navigator_1.Navigator(), new guid_generator_1.GuidGenerator(), new aad_url_builder_1.AadUrlBuilder(new guid_generator_1.GuidGenerator()), new user_decoder_1.UserDecoder(), new aad_logout_url_builder_1.AadLogoutUrlBuilder());
+        // TODO this.enableNativeLogging();
+        return context;
+    };
+    Authentication.getAadRedirectProcessor = function () {
+        var p = new aad_redirect_processor_1.AadRedirectProcessor(new query_string_deserializer_1.QueryStringDeserializer(), new user_decoder_1.UserDecoder(), new local_storage_1.LocalStorage(), window);
+        return p;
+    };
+    return Authentication;
+}());
+exports.Authentication = Authentication;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AadLogoutUrlBuilder = (function () {
+    function AadLogoutUrlBuilder() {
+        this.postLogoutRedirectUri = window.location.href;
+    }
+    AadLogoutUrlBuilder.prototype.with = function (tenant, postLogoutRedirectUri) {
+        this.tenant = tenant;
+        this.postLogoutRedirectUri = postLogoutRedirectUri || this.postLogoutRedirectUri;
+        return this;
+    };
+    AadLogoutUrlBuilder.prototype.build = function () {
+        var urlNavigate = AadLogoutUrlBuilder.MicrosoftLoginUrl + this.tenant + '/oauth2/logout?';
+        urlNavigate = urlNavigate + 'post_logout_redirect_uri=' + encodeURIComponent(this.postLogoutRedirectUri);
+        return urlNavigate;
+    };
+    return AadLogoutUrlBuilder;
+}());
+AadLogoutUrlBuilder.MicrosoftLoginUrl = 'https://login.microsoftonline.com/';
+exports.AadLogoutUrlBuilder = AadLogoutUrlBuilder;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var constants_1 = __webpack_require__(0);
+var aad_redirect_url_1 = __webpack_require__(6);
+var AadRedirectProcessor = (function () {
+    function AadRedirectProcessor(queryStringDeserializer, userDecoder, storage, window) {
+        this.queryStringDeserializer = queryStringDeserializer;
+        this.userDecoder = userDecoder;
+        this.storage = storage;
+        this.window = window;
+    }
+    AadRedirectProcessor.prototype.process = function () {
+        var deserializedHash = this.queryStringDeserializer.deserialize(this.window.location.hash);
+        var aadRedirect = new aad_redirect_url_1.AadRedirectUrl(deserializedHash);
+        if (aadRedirect.isAadRedirect()) {
+            var userProfile = this.userDecoder.decode(aadRedirect.idToken || aadRedirect.accesToken);
+            this.storage.setItem(constants_1.Constants.STORAGE.IDTOKEN, aadRedirect.idToken || '');
+            this.storage.setItem(constants_1.Constants.STORAGE.ACCESSTOKEN, aadRedirect.accesToken || '');
+            this.window.location.assign(this.storage.getItem(constants_1.Constants.STORAGE.LOGIN_REQUEST));
+        }
+        return aadRedirect.isAadRedirect();
+    };
+    return AadRedirectProcessor;
+}());
+exports.AadRedirectProcessor = AadRedirectProcessor;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var constants_1 = __webpack_require__(0);
+var AadRedirectUrl = (function () {
+    function AadRedirectUrl(object) {
+        this.object = object;
+    }
+    Object.defineProperty(AadRedirectUrl.prototype, "idToken", {
+        get: function () {
+            return this.object[constants_1.Constants.ID_TOKEN];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AadRedirectUrl.prototype, "expiresIn", {
+        get: function () {
+            return this.object[constants_1.Constants.EXPIRES_IN];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AadRedirectUrl.prototype, "accesToken", {
+        get: function () {
+            return this.object[constants_1.Constants.ACCESS_TOKEN];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AadRedirectUrl.prototype, "sessionState", {
+        get: function () {
+            return this.object[constants_1.Constants.SESSION_STATE];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    AadRedirectUrl.prototype.isAadRedirect = function () {
+        return (this.object.hasOwnProperty(constants_1.Constants.ERROR_DESCRIPTION) ||
+            this.object.hasOwnProperty(constants_1.Constants.ACCESS_TOKEN) ||
+            this.object.hasOwnProperty(constants_1.Constants.ID_TOKEN));
+    };
+    return AadRedirectUrl;
+}());
+exports.AadRedirectUrl = AadRedirectUrl;
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AadUrlBuilder = (function () {
+    function AadUrlBuilder(guidGenerator) {
+        this.addLibMetadata = function () {
+            // x-client-SKU
+            // x-client-Ver
+            return '&x-client-SKU=Js&x-client-Ver=' + this.libVersion;
+        };
+        this.guidGenerator = guidGenerator;
+        this.state = this.guidGenerator.generate();
+        this.clientRequestId = this.guidGenerator.generate();
+        this.responseType = 'id_token';
+        this.libVersion = '1.0.0';
+        this.redirectUri = window.location.href;
+    }
+    AadUrlBuilder.prototype.with = function (options) {
+        this.nonce = options.nonce;
+        this.tenant = options.tenant;
+        this.clientId = options.clientId;
+        this.resource = options.resource; // added
+        this.responseType = options.responseType || this.responseType;
+        this.redirectUri = options.redirectUri || this.redirectUri;
+        this.state = options.state;
+        this.slice = options.slice || this.slice;
+        this.clientRequestId = options.clientRequestId || this.clientRequestId;
+        this.libVersion = options.libVersion || this.libVersion;
+        this.extraQueryParameter = options.extraQueryParameter || this.extraQueryParameter;
+        return this;
+    };
+    AadUrlBuilder.prototype.build = function () {
+        var urlNavigate = AadUrlBuilder.MicrosoftLoginUrl + this.tenant + '/oauth2/authorize';
+        urlNavigate = urlNavigate + this.serialize() + this.addLibMetadata();
+        urlNavigate = urlNavigate + '&nonce=' + encodeURIComponent(this.nonce);
+        return urlNavigate;
+    };
+    AadUrlBuilder.prototype.serialize = function () {
+        var str = [];
+        str.push('?response_type=' + this.responseType);
+        str.push('client_id=' + encodeURIComponent(this.clientId));
+        if (this.resource) {
+            str.push('resource=' + encodeURIComponent(this.resource));
+        }
+        str.push('redirect_uri=' + encodeURIComponent(this.redirectUri));
+        str.push('state=' + encodeURIComponent(this.state));
+        if (this.slice) {
+            str.push('slice=' + encodeURIComponent(this.slice));
+        }
+        if (this.extraQueryParameter) {
+            str.push(this.extraQueryParameter);
+        }
+        // var correlationId = this.clientRequestId ? obj.correlationId : new GuidGenerator().generate();
+        str.push('client-request-id=' + encodeURIComponent(this.clientRequestId));
+        return str.join('&');
+    };
+    ;
+    return AadUrlBuilder;
+}());
+AadUrlBuilder.MicrosoftLoginUrl = 'https://login.microsoftonline.com/';
+exports.AadUrlBuilder = AadUrlBuilder;
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var GuidGenerator = (function () {
+    function GuidGenerator() {
+    }
+    GuidGenerator.prototype.generate = function () {
+        var guidHolder = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+        var hex = '0123456789abcdef';
+        var r = 0;
+        var guidResponse = '';
+        for (var i = 0; i < 36; i++) {
+            if (guidHolder[i] !== '-' && guidHolder[i] !== '4') {
+                // each x and y needs to be random
+                r = Math.random() * 16 | 0;
+            }
+            if (guidHolder[i] === 'x') {
+                guidResponse += hex[r];
+            }
+            else if (guidHolder[i] === 'y') {
+                // clock-seq-and-reserved first hex is filtered and remaining hex values are random
+                r &= 0x3; // bit and with 0011 to set pos 2 to zero ?0??
+                r |= 0x8; // set pos 3 to 1 as 1???
+                guidResponse += hex[r];
+            }
+            else {
+                guidResponse += guidHolder[i];
+            }
+        }
+        return guidResponse;
+    };
+    GuidGenerator.prototype.decimalToHex = function (value) {
+        var hex = value.toString(16);
+        while (hex.length < 2) {
+            hex = '0' + hex;
+        }
+        return hex;
+    };
+    return GuidGenerator;
+}());
+exports.GuidGenerator = GuidGenerator;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var LocalStorage = (function () {
+    function LocalStorage() {
+    }
+    LocalStorage.prototype.setItem = function (key, value) {
+        localStorage.setItem(key, value);
+    };
+    LocalStorage.prototype.getItem = function (key) {
+        return localStorage.getItem(key);
+    };
+    return LocalStorage;
+}());
+exports.LocalStorage = LocalStorage;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Navigator = (function () {
+    function Navigator() {
+    }
+    Navigator.prototype.navigate = function (url) {
+        window.location.replace(url);
+    };
+    return Navigator;
+}());
+exports.Navigator = Navigator;
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var constants_1 = __webpack_require__(0);
+var QueryStringDeserializer = (function () {
+    function QueryStringDeserializer() {
+        this.plRegex = /\+/g;
+    }
+    QueryStringDeserializer.prototype.deserialize = function (queryString) {
+        queryString = this.trimHashSign(queryString);
+        var match;
+        // Regex for replacing addition symbol with a space
+        var searchRegex = /([^&=]+)=([^&]*)/g;
+        var obj = {};
+        match = searchRegex.exec(queryString);
+        while (match) {
+            obj[this.decode(match[1])] = this.decode(match[2]);
+            match = searchRegex.exec(queryString);
+        }
+        return obj;
+    };
+    QueryStringDeserializer.prototype.decode = function (s) {
+        return decodeURIComponent(s.replace(this.plRegex, ' '));
+    };
+    QueryStringDeserializer.prototype.trimHashSign = function (hash) {
+        if (hash.indexOf('#/') > -1) {
+            hash = hash.substring(hash.indexOf('#/') + 2);
+        }
+        else if (hash.indexOf('#') > -1) {
+            hash = hash.substring(1);
+        }
+        return hash;
+    };
+    return QueryStringDeserializer;
+}());
+exports.QueryStringDeserializer = QueryStringDeserializer;
+function hasAadProps(deserializedHash) {
+    return (deserializedHash.hasOwnProperty(constants_1.Constants.ERROR_DESCRIPTION) ||
+        deserializedHash.hasOwnProperty(constants_1.Constants.ACCESS_TOKEN) ||
+        deserializedHash.hasOwnProperty(constants_1.Constants.ID_TOKEN));
+}
+exports.hasAadProps = hasAadProps;
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var UserDecoder = (function () {
+    function UserDecoder() {
+        this.decodeJwt = function (jwtToken) {
+            var idTokenPartsRegex = /^([^\.\s]*)\.([^\.\s]+)\.([^\.\s]*)$/;
+            var matches = idTokenPartsRegex.exec(jwtToken);
+            if (!matches || matches.length < 4) {
+                throw new Error("Failed to decode Jwt token. The token has invalid format. Actual token: '" + jwtToken + "'");
+            }
+            var crackedToken = {
+                header: matches[1],
+                JWSPayload: matches[2],
+                JWSSig: matches[3]
+            };
+            return crackedToken;
+        };
+        this.base64DecodeStringUrlSafe = function (base64IdToken) {
+            // html5 should support atob function for decoding
+            base64IdToken = base64IdToken.replace(/-/g, '+').replace(/_/g, '/');
+            if (window.atob) {
+                return decodeURIComponent(escape(window.atob(base64IdToken))); // jshint ignore:line
+            }
+            else {
+                return decodeURIComponent(escape(this.decodeBase64(base64IdToken)));
+            }
+        };
+    }
+    UserDecoder.prototype.decode = function (encoded) {
+        var jwtDecoded = this.decodeJwt(encoded);
+        if (!jwtDecoded) {
+            throw Error('Failed to decode value. Value has invalid format.');
+        }
+        var decodedPayLoad = this.safeDecodeBase64(jwtDecoded.JWSPayload);
+        var user = JSON.parse(decodedPayLoad);
+        // if (!user || !user.hasOwnProperty('aud')) throw new Error('');
+        return user;
+    };
+    UserDecoder.prototype.safeDecodeBase64 = function (value) {
+        var base64Decoded = this.base64DecodeStringUrlSafe(value);
+        if (!base64Decoded) {
+            // this.info('The returned id_token could not be base64 url safe decoded.');
+            throw Error('Failed to base64 decode value. Value has invalid format.');
+        }
+        return base64Decoded;
+    };
+    UserDecoder.prototype.decodeBase64 = function (base64IdToken) {
+        var codes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+        base64IdToken = String(base64IdToken).replace(/=+$/, '');
+        var length = base64IdToken.length;
+        if (length % 4 === 1) {
+            throw new Error('The token to be decoded is not correctly encoded.');
+        }
+        var h1, h2, h3, h4, bits, c1, c2, c3, decoded = '';
+        for (var i = 0; i < length; i += 4) {
+            // every 4 base64 encoded character will be converted to 3 byte string, which is 24 bits
+            // then 6 bits per base64 encoded character
+            h1 = codes.indexOf(base64IdToken.charAt(i));
+            h2 = codes.indexOf(base64IdToken.charAt(i + 1));
+            h3 = codes.indexOf(base64IdToken.charAt(i + 2));
+            h4 = codes.indexOf(base64IdToken.charAt(i + 3));
+            // for padding, if last two are '='
+            if (i + 2 === length - 1) {
+                bits = h1 << 18 | h2 << 12 | h3 << 6;
+                c1 = bits >> 16 & 255;
+                c2 = bits >> 8 & 255;
+                decoded += String.fromCharCode(c1, c2);
+                break;
+            }
+            else if (i + 1 === length - 1) {
+                bits = h1 << 18 | h2 << 12;
+                c1 = bits >> 16 & 255;
+                decoded += String.fromCharCode(c1);
+                break;
+            }
+            bits = h1 << 18 | h2 << 12 | h3 << 6 | h4;
+            // then convert to 3 byte chars
+            c1 = bits >> 16 & 255;
+            c2 = bits >> 8 & 255;
+            c3 = bits & 255;
+            decoded += String.fromCharCode(c1, c2, c3);
+        }
+        return decoded;
+    };
+    ;
+    UserDecoder.prototype.isEmpty = function (str) {
+        return (typeof str === 'undefined' || !str || 0 === str.length);
+    };
+    ;
+    return UserDecoder;
+}());
+exports.UserDecoder = UserDecoder;
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+// export * from './adal.authentication';
+// export * from './adal.authentication.context';
+__export(__webpack_require__(3));
+__export(__webpack_require__(2));
+__export(__webpack_require__(1));
+
+
+/***/ }
+/******/ ]);
+});
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10619,40 +11313,34 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var $ = __webpack_require__(4);
-//https://medium.com/@OCombe/how-to-publish-a-library-for-angular-2-on-npm-5f48cdabf435
-var JQuerySearchClient_1 = __webpack_require__(2);
-var spsearchjs_1 = __webpack_require__(3);
-var SPSite = "https://mtcecbos3.sharepoint.com/";
+var $ = __webpack_require__(1);
+var spsearchjs_1 = __webpack_require__(0);
 
-var JQuerySearchApp = function () {
-    function JQuerySearchApp() {
-        _classCallCheck(this, JQuerySearchApp);
+var JQuerySearchClient = function () {
+    //private authCtx: AuthenticationContext;
+    //public constructor(adalCtx: AuthenticationContext){
+    function JQuerySearchClient() {
+        _classCallCheck(this, JQuerySearchClient);
 
-        this.searchClient = new JQuerySearchClient_1.JQuerySearchClient();
+        console.log("Initializing the JQuerySearchClient");
+        //this.authCtx = adalCtx;
     }
 
-    _createClass(JQuerySearchApp, [{
-        key: "init",
-        value: function init() {
-            $('#searchButton').click(this.search);
-        }
-    }, {
-        key: "search",
-        value: function search() {
-            console.log("Something happened - just checking");
-            var query = new spsearchjs_1.SPQuery(SPSite);
-            query.QueryText = $('#searchInput').val();
-            console.log("Here is the query: " + query.QueryText);
+    _createClass(JQuerySearchClient, [{
+        key: "getSearchResults",
+        value: function getSearchResults(query) {
+            return $.get(query).done(function (data) {
+                var results = spsearchjs_1.SPSearchResults.getSearchResultsFromJson(query);
+                return results;
+            });
+            //return Promise.resolve(null);
         }
     }]);
 
-    return JQuerySearchApp;
+    return JQuerySearchClient;
 }();
 
-exports.JQuerySearchApp = JQuerySearchApp;
-var app = new JQuerySearchApp();
-app.init();
+exports.JQuerySearchClient = JQuerySearchClient;
 
 /***/ }),
 /* 6 */
@@ -10666,8 +11354,101 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var SP_Results_1 = __webpack_require__(1);
-var SP_Query_1 = __webpack_require__(0);
+var $ = __webpack_require__(1);
+//https://medium.com/@OCombe/how-to-publish-a-library-for-angular-2-on-npm-5f48cdabf435
+var JQuerySearchClient_1 = __webpack_require__(5);
+var spsearchjs_1 = __webpack_require__(0);
+var adal_typescript_1 = __webpack_require__(4);
+var tenantId = "paulsummfy17";
+var SPSite = "https://" + tenantId + ".sharepoint.com";
+var authConfig = {
+    instance: "https://login.microsoftonline.com",
+    tenant: tenantId + ".onmicrosoft.com",
+    clientId: "98b65e1c-b4b0-4a43-87e2-e15029e616c1",
+    postLogoutRedirectUri: window.location.origin,
+    cacheLocation: 'localStorage',
+    redirectUri: "http://localhost:8080"
+};
+
+var JQuerySearchApp = function () {
+    function JQuerySearchApp() {
+        _classCallCheck(this, JQuerySearchApp);
+    }
+
+    _createClass(JQuerySearchApp, [{
+        key: "getConfig",
+        value: function getConfig() {
+            return new adal_typescript_1.AdalConfig(authConfig.clientId, authConfig.tenant, authConfig.redirectUri);
+        }
+    }, {
+        key: "init",
+        value: function init() {
+            var _this = this;
+
+            var self = this;
+            this.adalConfig = this.getConfig();
+            this.authCtx = adal_typescript_1.Authentication.getContext(this.adalConfig);
+            $('#searchButton').click(self.search);
+            adal_typescript_1.Authentication.getAadRedirectProcessor().process();
+            this.user = this.authCtx.getUser();
+            if (this.authCtx && this.user) {
+                $('#logoutButton').show();
+                $('#logoutButton').click(function (e) {
+                    return _this.logout(e);
+                });
+            } else {
+                $('#loginButton').show();
+                $('#loginButton').click(function (e) {
+                    return _this.login(e);
+                });
+            }
+        }
+    }, {
+        key: "search",
+        value: function search() {
+            var aClient = new JQuerySearchClient_1.JQuerySearchClient();
+            console.log("Something happened - just checking");
+            var query = new spsearchjs_1.SPQuery(SPSite);
+            query.QueryText = $('#searchInput').val();
+            console.log("Running search query");
+            aClient.getSearchResults(query.GetRequest()).then(function (results) {
+                console.log(results);
+            });
+            console.log("Here is the query: " + query.QueryText);
+        }
+    }, {
+        key: "logout",
+        value: function logout(event) {
+            this.authCtx.logout();
+        }
+    }, {
+        key: "login",
+        value: function login(event) {
+            this.authCtx.login();
+        }
+    }]);
+
+    return JQuerySearchApp;
+}();
+
+exports.JQuerySearchApp = JQuerySearchApp;
+var app = new JQuerySearchApp();
+app.init();
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SP_Results_1 = __webpack_require__(3);
+var SP_Query_1 = __webpack_require__(2);
 
 var MockSPSearchClient = function () {
     function MockSPSearchClient() {

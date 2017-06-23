@@ -21,6 +21,8 @@
     "webpack-dev-server": "^2.4.5"
   },
   "dependencies": {
+    "adal-angular": "^1.0.14",
+    "adal-typescript": "^1.0.1",
     "jquery": "^3.2.1"
   }
 }

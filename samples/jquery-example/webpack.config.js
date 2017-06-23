@@ -9,11 +9,9 @@ var babelOptions = {
 
 module.exports = {
     context: __dirname + '/src/',
-    entry: {
-        bundle: './app.ts'
-    },
+    entry: './app.ts',
     output: {
-        filename: '[name].js',
+        filename: 'bundle.js',
         path: __dirname + '/lib/'
     },
     module: {
@@ -47,6 +45,9 @@ module.exports = {
     resolve: {
         extensions: ['.ts','.tsx','.js','.json']
     },
-    devtool: "source-map"
+    devtool: "source-map",
+    devServer: {
+        inline:true
+    }
     
 }

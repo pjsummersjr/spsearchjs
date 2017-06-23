@@ -3,6 +3,7 @@ export interface ISearchClient {
 }
 
 export interface ISearchQuery {
+    GetRequest() : string;
     BuildQuery() : string;
 }
 
