@@ -1,6 +1,6 @@
 import $ = require('jquery');
 
-//https://medium.com/@OCombe/how-to-publish-a-library-for-angular-2-on-npm-5f48cdabf435
+//
 
 import { JQuerySearchClient } from './JQuerySearchClient';
 import { ISearchClient, ISearchQuery, ISearchResults } from 'spsearchjs';
@@ -30,7 +30,10 @@ export class JQuerySearchApp {
     }
 
     private getConfig() : AdalConfig {
-        return new AdalConfig(authConfig.clientId, authConfig.tenant, authConfig.redirectUri);
+        return new AdalConfig(authConfig.clientId, 
+                                authConfig.tenant, 
+                                authConfig.redirectUri, 
+                                authConfig.postLogoutRedirectUri);
     }
 
     public init():void {
@@ -39,7 +42,7 @@ export class JQuerySearchApp {
         this.adalConfig = this.getConfig();
         this.authCtx = Authentication.getContext(this.adalConfig);
 
-        $('#searchButton').click(self.search);
+        $('#searchButton').click(() => self.search());
 
         Authentication.getAadRedirectProcessor().process();
         this.user = this.authCtx.getUser();
@@ -51,18 +54,33 @@ export class JQuerySearchApp {
             $('#loginButton').show();
             $('#loginButton').click(e => this.login(e));
         }
+
+        this.renderUser();
+    }
+    /**
+     * Renders the panel containing the custom user information
+     */
+    private renderUser() : void {
+        let userEl = $('#userPanel');
+        
+        if(this.user) {
+             $('#userPanel').html("Welcome, " + this.user.name);
+        }
+        else {
+             $('#userPanel').html("Please click the 'Login' button");
+        }
     }
     
     public search():void {
-        let aClient: ISearchClient = new JQuerySearchClient();
-        console.log("Something happened - just checking");
+        const token: string = this.authCtx.getToken();
+        let aClient: ISearchClient = new JQuerySearchClient(token);
+
         let query: SPQuery = new SPQuery(SPSite);
-        query.QueryText = $('#searchInput').val();
-        console.log("Running search query");
+        query.QueryText = $('#searchInput').val(); 
+
         aClient.getSearchResults(query.GetRequest()).then((results) => {
             console.log(results);
         });
-        console.log("Here is the query: " + query.QueryText);
     }
 
     public logout(event) : void {

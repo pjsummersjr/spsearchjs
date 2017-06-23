@@ -1,3 +1,20 @@
 .spsearchbox {
     width:400px;
 }
+/* Color pallete: https://www.w3schools.com/colors/colors_palettes.asp */
+.spsearchjs-header {
+    background: #36486b;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.spsearchjs-border-debug {
+    border:1px black solid;
+}
+
+#userPanel {
+    float:left;
+    margin-right:10px;
+}

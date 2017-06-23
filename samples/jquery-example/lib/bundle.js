@@ -11317,20 +11317,28 @@ var $ = __webpack_require__(1);
 var spsearchjs_1 = __webpack_require__(0);
 
 var JQuerySearchClient = function () {
-    //private authCtx: AuthenticationContext;
-    //public constructor(adalCtx: AuthenticationContext){
-    function JQuerySearchClient() {
+    function JQuerySearchClient(token) {
         _classCallCheck(this, JQuerySearchClient);
 
         console.log("Initializing the JQuerySearchClient");
-        //this.authCtx = adalCtx;
+        this.authToken = token;
     }
 
     _createClass(JQuerySearchClient, [{
         key: "getSearchResults",
         value: function getSearchResults(query) {
-            return $.get(query).done(function (data) {
+            console.log("Getting search results...");
+            return $.ajax({
+                type: 'GET',
+                url: query,
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + this.authToken
+                }
+            }).done(function (data) {
+                console.log("Received results, processing");
                 var results = spsearchjs_1.SPSearchResults.getSearchResultsFromJson(query);
+                console.log("Returning search results");
                 return results;
             });
             //return Promise.resolve(null);
@@ -11355,7 +11363,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var $ = __webpack_require__(1);
-//https://medium.com/@OCombe/how-to-publish-a-library-for-angular-2-on-npm-5f48cdabf435
+//
 var JQuerySearchClient_1 = __webpack_require__(5);
 var spsearchjs_1 = __webpack_require__(0);
 var adal_typescript_1 = __webpack_require__(4);
@@ -11388,7 +11396,9 @@ var JQuerySearchApp = function () {
             var self = this;
             this.adalConfig = this.getConfig();
             this.authCtx = adal_typescript_1.Authentication.getContext(this.adalConfig);
-            $('#searchButton').click(self.search);
+            $('#searchButton').click(function () {
+                return self.search();
+            });
             adal_typescript_1.Authentication.getAadRedirectProcessor().process();
             this.user = this.authCtx.getUser();
             if (this.authCtx && this.user) {
@@ -11402,11 +11412,27 @@ var JQuerySearchApp = function () {
                     return _this.login(e);
                 });
             }
+            this.renderUser();
+        }
+        /**
+         * Renders the panel containing the custom user information
+         */
+
+    }, {
+        key: "renderUser",
+        value: function renderUser() {
+            var userEl = $('#userPanel');
+            if (this.user) {
+                $('#userPanel').html("Welcome, " + this.user.name);
+            } else {
+                $('#userPanel').html("Please click the 'Login' button");
+            }
         }
     }, {
         key: "search",
         value: function search() {
-            var aClient = new JQuerySearchClient_1.JQuerySearchClient();
+            var token = this.authCtx.getToken();
+            var aClient = new JQuerySearchClient_1.JQuerySearchClient(token);
             console.log("Something happened - just checking");
             var query = new spsearchjs_1.SPQuery(SPSite);
             query.QueryText = $('#searchInput').val();

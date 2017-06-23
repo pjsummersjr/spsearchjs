@@ -6,20 +6,31 @@ import { AuthenticationContext } from 'adal-angular';
 
 export class JQuerySearchClient implements ISearchClient {
 
-    //private authCtx: AuthenticationContext;
+    private authToken: string;
 
-    //public constructor(adalCtx: AuthenticationContext){
-    public constructor(){
+    
+    public constructor(token: string){
         console.log("Initializing the JQuerySearchClient");
-
-        //this.authCtx = adalCtx;
+        this.authToken = token;
     }
 
     public getSearchResults(query: string) : Promise<ISearchResults> {
-        return $.get(query).done((data) => {
-            let results : ISearchResults = SPSearchResults.getSearchResultsFromJson(query); 
-            return results;
-        });
+        console.log("Getting search results...");
+        return $.ajax({
+                        type:'GET',
+                        url:query,
+                        headers: {
+                            'Accept':'application/json',
+                            'Authorization':'Bearer ' + this.authToken
+                        }
+                    })
+                    .done((data) => {
+                        console.log("Received results, processing");
+                        let results : ISearchResults = SPSearchResults.getSearchResultsFromJson(query); 
+                        console.log("Returning search results");
+                        return results;
+                    }
+                );
         //return Promise.resolve(null);
     }
 
