@@ -11386,7 +11386,7 @@ var JQuerySearchApp = function () {
     _createClass(JQuerySearchApp, [{
         key: "getConfig",
         value: function getConfig() {
-            return new adal_typescript_1.AdalConfig(authConfig.clientId, authConfig.tenant, authConfig.redirectUri);
+            return new adal_typescript_1.AdalConfig(authConfig.clientId, authConfig.tenant, authConfig.redirectUri, authConfig.postLogoutRedirectUri);
         }
     }, {
         key: "init",
@@ -11433,14 +11433,11 @@ var JQuerySearchApp = function () {
         value: function search() {
             var token = this.authCtx.getToken();
             var aClient = new JQuerySearchClient_1.JQuerySearchClient(token);
-            console.log("Something happened - just checking");
             var query = new spsearchjs_1.SPQuery(SPSite);
             query.QueryText = $('#searchInput').val();
-            console.log("Running search query");
             aClient.getSearchResults(query.GetRequest()).then(function (results) {
                 console.log(results);
             });
-            console.log("Here is the query: " + query.QueryText);
         }
     }, {
         key: "logout",
