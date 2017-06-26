@@ -1,7 +1,6 @@
 import $ = require('jquery');
 
 import { ISearchClient, ISearchResults, SPSearchResults } from 'spsearchjs';
-import { AuthenticationContext } from 'adal-angular';
 
 
 export class JQuerySearchClient implements ISearchClient {
@@ -20,9 +19,9 @@ export class JQuerySearchClient implements ISearchClient {
                         type:'GET',
                         url:query,
                         headers: {
-                            'Accept':'application/json',
-                            'Authorization':'Bearer ' + this.authToken
-                        }
+                            'Accept': 'application/json', 
+                            'Authorization': 'Bearer ' + this.authToken, 
+                        },
                     })
                     .done((data) => {
                         console.log("Received results, processing");
