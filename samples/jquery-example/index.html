@@ -16,24 +16,29 @@
             <h2 id="title">SharePoint jQuery Search Example</h2> 
         </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col col-md-4">
             </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-4">             
+            <div class="col col-md-4"></div>
+            <div class="col col-md-4">             
                 <button type="button" id="loginButton" class="btn btn-sm btn-success" style="display:none">Login</button>
                 <button type="button" id="logoutButton" class="btn btn-sm btn-success" style="display:none">Logout</button>
+                <button type="button" id="clearCacheButton" class="btn btn-sm btn-error">Clear Cache</button>
                 <div id="userPanel"></div>  
             </div>
         </div>
         <div id="info"></div>
         <div id="searchInputContainer" class="row">
-            <div class="col-md-4">
+            <div class="col col-md-4">
                 <input type="text" id="searchInput" class="form-control spsearchbox" placeholder="Search..."  />
             </div>
             <div class="col col-md-2">
                 <button type="button" id="searchButton" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>Search</button> 
             </div>
             <div class="col col-md-6"></div>
+        </div>
+        <div id="searchResultsContainer" class="row">
+            <div class="col col-md-4" id="searchResultsNavigation"></div>
+            <div class="col col-md-8" id="searchResults"></div>
         </div>
     </div>
     <script src="lib/bundle.js"></script>

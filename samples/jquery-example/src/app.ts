@@ -83,6 +83,17 @@ export class JQuerySearchApp {
             this.login();
         }
     }
+
+    //private renderResults(results: ISearchResults) : void {
+    private renderResults() : void {
+        let resultsComp = $('#searchResults');
+        let resultsHtml = "";
+        //results.data[0].items.forEach((item) => {
+        //    resultsHtml += "<div>" + item.fields[3] + "</div>";
+        //})
+        resultsComp.html(resultsHtml);
+    }
+    
     /**
      * Renders the panel containing the custom user information
      */
