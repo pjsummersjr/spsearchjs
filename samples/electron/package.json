@@ -1,0 +1,14 @@
+{
+  "name": "electron-search",
+  "version": "1.0.0",
+  "description": "Can I use spsearchjs with electron?",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Paul Summers",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-prebuilt": "^1.4.13"
+  }
+}
