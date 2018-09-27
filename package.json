@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Javascript library for integrating with search in Office 365",
   "main": "lib/spsearch.js",
+  "typings": "lib/index",
   "module": "./src/index.ts",
   "directories": {
     "lib": "lib",
@@ -41,6 +42,7 @@
     "mocha": "^3.4.2",
     "ts-loader": "^2.1.0",
     "ts-node": "^3.0.6",
-    "webpack": "^2.6.1"
+    "typescript": "^3.0.1",
+    "webpack": "^2.7.0"
   }
 }

@@ -9,7 +9,7 @@ import {
 
 
 export class SPSearchResult implements ISearchResult {
-    items = [];
+    items: ISearchResultItem[] = [];
     totalItems = 0;
     type = "Primary";
 
@@ -17,10 +17,11 @@ export class SPSearchResult implements ISearchResult {
         let searchResult: ISearchResult = new SPSearchResult();
         
         searchResult.totalItems = data.TotalRows;
-
-        if(data.Table != null && data.Table.Rows != null){
+        console.log(`Processing getSearchResultFromJson`);
+        if(data.Table && data.Table.Rows){
             //Process each row (result) in the result set
-            data.Table.Rows.map((row, i) => {
+            data.Table.Rows.results.map((row: any, i: any) => {
+                
                 searchResult.items.push(
                     //each row contains Cells which contain Key(property name), value and data type
                     SPSearchResultItem.getSearchresultItemFromRow(row)
@@ -33,12 +34,12 @@ export class SPSearchResult implements ISearchResult {
 }
 
 export class SPSearchResultItem implements ISearchResultItem {
-    fields = [];
+    fields: ISearchResultField[] = [];
 
     public static getSearchresultItemFromRow(data: any): ISearchResultItem {
         let searchResultItem = new SPSearchResultItem();
         let jsonResult = "{";
-        data.Cells.map((cell, i) =>{
+        data.Cells.results.map((cell: any, i: any) =>{
             if(i > 0){
                 jsonResult += ",";
             }
@@ -58,16 +59,23 @@ export class SPSearchResultItem implements ISearchResultItem {
 }
 
 export class SPSearchResults implements ISearchResults {
-    data = [];
+    data: ISearchResult[] = [];
     private PrimarySearchResult: ISearchResult;
     private SecondarySearchResult: ISearchResult;
 
     public static getSearchResultsFromJson(response: any): ISearchResults {
+        
         let searchResults = new SPSearchResults();
-        if(response.PrimaryQueryResult != null && response.PrimaryQueryResult.RelevantResults != null) {
-            searchResults.PrimarySearchResult = SPSearchResult.getSearchResultFromJson(response.PrimaryQueryResult.RelevantResults);
+        if(response.d && response.d.query && response.d.query.PrimaryQueryResult && 
+            response.d.query.PrimaryQueryResult.RelevantResults && 
+            response.d.query.PrimaryQueryResult.RelevantResults.Table &&
+            response.d.query.PrimaryQueryResult.RelevantResults.Table.Rows) 
+        {
+            console.log('Processing the data payload');
+            searchResults.PrimarySearchResult = SPSearchResult.getSearchResultFromJson(response.d.query.PrimaryQueryResult.RelevantResults);
             searchResults.PrimarySearchResult.type = "Primary";    
             searchResults.data.push(searchResults.PrimarySearchResult);
+            console.log(`Search result payload processing complete`);
         }
 /*
         if(response.SecondaryQueryResult != null && response.SecondaryQueryResult.RelevantResults != null){
@@ -76,7 +84,7 @@ export class SPSearchResults implements ISearchResults {
             searchResults.data.push(searchResults.SecondarySearchResult);
         }
 */        
-
+        console.log(`Returning the result object`);
         return searchResults;
     }
 }
